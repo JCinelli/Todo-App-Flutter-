@@ -10,16 +10,39 @@ class DatabaseHelper {
       await db.execute(
           "CREATE TABLE tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT)");
       await db.execute(
-          "CREATE TABLE todos(id INTEGER PRIMARY KEY, taskID INT, title TEXT, isDone INT)");
+          "CREATE TABLE todos(id INTEGER PRIMARY KEY, taskId INT, title TEXT, isDone INT)");
 
       return db;
     }, version: 1);
   }
 
-  Future<void> insertTask(Task task) async {
+  Future<int> insertTask(Task task) async {
     Database _db = await database();
-    await _db.insert('tasks', task.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+
+    int taskId = 0;
+
+    await _db
+        .insert('tasks', task.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace)
+        .then((value) {
+      taskId = value;
+    });
+
+    return taskId;
+  }
+
+  Future<void> updateTaskTitle(int idTask, String newTitle) async {
+    Database _db = await database();
+
+    await _db
+        .rawUpdate("UPDATE tasks SET title = '$newTitle' WHERE id = '$idTask'");
+  }
+
+  Future<void> updateTaskDesciption(int idTask, String newDesciption) async {
+    Database _db = await database();
+
+    await _db.rawUpdate(
+        "UPDATE tasks SET description = '$newDesciption' WHERE id = '$idTask'");
   }
 
   Future<List<Task>> findAllTasks() async {
@@ -32,6 +55,13 @@ class DatabaseHelper {
           title: tasksMap[index]['title'],
           description: tasksMap[index]['description']);
     });
+  }
+
+  Future<void> deleteTask(int idTask) async {
+    Database _db = await database();
+
+    await _db.rawDelete("DELETE FROM tasks WHERE id = '$idTask'");
+    await _db.rawDelete("DELETE FROM todos WHERE TaskId = '$idTask'");
   }
 
   Future<void> insertTodo(Todo todo) async {
@@ -53,5 +83,12 @@ class DatabaseHelper {
         isDone: todosMap[index]['isDone'],
       );
     });
+  }
+
+  Future<void> updateTodoIsDone(int idTodo, int isDone) async {
+    Database _db = await database();
+
+    await _db
+        .rawUpdate("UPDATE todos SET isDone = '$isDone' WHERE id = '$idTodo'");
   }
 }

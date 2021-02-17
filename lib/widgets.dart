@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class TaskcardWidget extends StatelessWidget {
   /* Fiels */
@@ -15,6 +16,14 @@ class TaskcardWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
       width: double.infinity,
       decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 0.1),
+        gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Color(0xFF812DE3).withOpacity(0.7),
+              Color(0xFFEB1294).withOpacity(0.7),
+            ]),
         borderRadius: BorderRadius.circular(20.0),
         color: Colors.white,
       ),
@@ -26,14 +35,14 @@ class TaskcardWidget extends StatelessWidget {
               /* If 'title' is null, write 'No title added . .' */
               title ?? 'No title added . .',
               style: TextStyle(
-                  color: Color(0xFF211551),
+                  color: Colors.white,
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold)),
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: Text(description ?? 'No description added . .',
                 style: TextStyle(
-                  color: Color(0xFF868290),
+                  color: Colors.white,
                   fontSize: 16.0,
                   height: 1.5,
                 )),
@@ -65,6 +74,18 @@ class TodoWidget extends StatelessWidget {
             height: 20.0,
             margin: EdgeInsets.only(right: 12.0),
             decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: isDone
+                      ? [
+                          Color(0xFF812DE3),
+                          Color(0xFFEB1294),
+                        ]
+                      : [
+                          Colors.transparent,
+                          Colors.transparent,
+                        ]),
               color: isDone ? Color(0xFF7349FE) : Colors.transparent,
               borderRadius: BorderRadius.circular(6.0),
               border: isDone
@@ -75,12 +96,14 @@ class TodoWidget extends StatelessWidget {
               image: AssetImage('assets/images/check_icon.png'),
             ),
           ),
-          Text(
-            text ?? '(Unnamed Todo)',
-            style: TextStyle(
-                fontSize: 16.0,
-                color: isDone ? Color(0xFF211551) : Color(0xFF86829D),
-                fontWeight: isDone ? FontWeight.bold : FontWeight.w500),
+          Flexible(
+            child: Text(
+              text ?? '(Unnamed Todo)',
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: isDone ? Color(0xFF211551) : Color(0xFF86829D),
+                  fontWeight: isDone ? FontWeight.bold : FontWeight.w500),
+            ),
           ),
         ],
       ),
